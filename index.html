@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adicionar Subcapítulos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            700: '#6D28D9',
+                            800: '#5B21B6',
+                            900: '#4C1D95'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Helvetica', Arial, sans-serif;
+            background-color: #f9fafb;
+        }
+        .editor-toolbar button:hover {
+            background-color: #ede9fe;
+        }
+        .editor-content {
+            min-height: 150px;
+            border: 1px solid #d1d5db;
+            border-top: none;
+        }
+        .editor-content:focus {
+            outline: none;
+        }
+        .tab-active {
+            border-bottom: 3px solid #ede9fe;
+            background-color: #6D28D9;
+            color: white;
+        }
+        .tab-inactive {
+            background-color: #4C1D95;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        .tab-inactive:hover {
+            background-color: #5B21B6;
+            color: white;
+        }
+        .editor-button {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+        }
+        .editor-button.active {
+            background-color: #ddd6fe;
+        }
+        .editor-button:hover {
+            background-color: #ede9fe;
+        }
+        .color-picker {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 1px solid #e5e7eb;
+        }
+        .tab-content-container {
+            min-height: 420px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="max-w-4xl mx-auto my-8">
+        <div class="border border-purple-300 border-t-4 border-t-purple-700 rounded-lg shadow-lg overflow-hidden">
+            <!-- Encabezado con borde morado superior -->
+            <div class="bg-purple-800 px-6 py-4">
+                <h1 class="text-xl font-bold text-white">Adicionar Subcapítulos</h1>
+            </div>
+            
+            <div class="p-6">
+                <!-- Denominación -->
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Denominación *</label>
+                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-300 focus:border-purple-300" >
+                </div>
+                
+                <!-- Pestañas -->
+                <div class="mb-6">
+                    <div class="flex rounded-t-md overflow-hidden">
+                        <button id="tab-datos" class="px-4 py-2 text-sm font-medium tab-active">Datos generales</button>
+                        <button id="tab-capitulos" class="px-4 py-2 text-sm font-medium tab-inactive">Capítulos</button>
+                        <button id="tab-rango" class="px-4 py-2 text-sm font-medium tab-inactive">Rango de publicidad</button>
+                    </div>
+                </div>
+                
+                <!-- Contenedor con altura fija -->
+                <div class="tab-content-container">
+                    <!-- Contenido de pestaña "Datos generales" -->
+                    <div id="content-datos" class="mb-6">
+                        <!-- Fechas -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Fecha inicio:</label>
+                                <div class="relative">
+                                    <input type="date" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-300 focus:border-purple-300" value="2023-10-31">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Fecha fin:</label>
+                                <div class="relative">
+                                    <input type="date" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-300 focus:border-purple-300">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Descripción con editor -->
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Descripción:</label>
+                            
+                            <!-- Barra de herramientas del editor -->
+                            <div class="editor-toolbar border border-gray-300 rounded-t-md bg-gray-50 p-2 flex flex-wrap gap-1">
+                                <!-- Selector de fuente -->
+                                <div class="relative">
+                                    <select id="font-family" class="text-xs px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-purple-300">
+                                        <option value="Helvetica">Helvetica</option>
+                                        <option value="Arial">Arial</option>
+                                        <option value="Times New Roman">Times New Roman</option>
+                                        <option value="Georgia">Georgia</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Botones de formato -->
+                                <button id="bold" class="editor-button" title="Negrita">
+                                    <i class="fas fa-bold"></i>
+                                </button>
+                                <button id="italic" class="editor-button" title="Cursiva">
+                                    <i class="fas fa-italic"></i>
+                                </button>
+                                <button id="underline" class="editor-button" title="Subrayado">
+                                    <i class="fas fa-underline"></i>
+                                </button>
+                                
+                                <!-- Tamaño de fuente -->
+                                <div class="flex border border-gray-300 rounded overflow-hidden">
+                                    <button id="font-decrease" class="editor-button rounded-none border-0" title="Disminuir tamaño">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <span id="font-size-display" class="px-2 py-1 text-xs flex items-center">12pt</span>
+                                    <button id="font-increase" class="editor-button rounded-none border-0" title="Aumentar tamaño">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                                
+                                <!-- Colores -->
+                                <div class="flex">
+                                    <div class="relative group">
+                                        <button class="editor-button" title="Color de texto">
+                                            <i class="fas fa-font"></i>
+                                        </button>
+                                        <div class="absolute hidden group-hover:block bg-white shadow-lg rounded-md p-2 z-10">
+                                            <div class="flex gap-1">
+                                                <div class="color-picker bg-black" data-color="black"></div>
+                                                <div class="color-picker bg-red-500" data-color="red"></div>
+                                                <div class="color-picker bg-blue-500" data-color="blue"></div>
+                                                <div class="color-picker bg-green-500" data-color="green"></div>
+                                                <div class="color-picker bg-purple-600" data-color="#6D28D9"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="relative group">
+                                        <button class="editor-button" title="Color de fondo">
+                                            <i class="fas fa-fill-drip"></i>
+                                        </button>
+                                        <div class="absolute hidden group-hover:block bg-white shadow-lg rounded-md p-2 z-10">
+                                            <div class="flex gap-1">
+                                                <div class="color-picker bg-white border border-gray-300" data-bgcolor="white"></div>
+                                                <div class="color-picker bg-yellow-100" data-bgcolor="#FEF9C3"></div>
+                                                <div class="color-picker bg-blue-100" data-bgcolor="#DBEAFE"></div>
+                                                <div class="color-picker bg-green-100" data-bgcolor="#D1FAE5"></div>
+                                                <div class="color-picker bg-purple-100" data-bgcolor="#EDE9FE"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Alineación -->
+                                <div class="flex border border-gray-300 rounded overflow-hidden">
+                                    <button id="align-left" class="editor-button rounded-none border-0" title="Alinear izquierda">
+                                        <i class="fas fa-align-left"></i>
+                                    </button>
+                                    <button id="align-center" class="editor-button rounded-none border-0 border-l border-gray-300" title="Centrar">
+                                        <i class="fas fa-align-center"></i>
+                                    </button>
+                                    <button id="align-right" class="editor-button rounded-none border-0 border-l border-gray-300" title="Alinear derecha">
+                                        <i class="fas fa-align-right"></i>
+                                    </button>
+                                </div>
+                                
+                                <!-- Listas -->
+                                <button id="bullet-list" class="editor-button" title="Lista con viñetas">
+                                    <i class="fas fa-list-ul"></i>
+                                </button>
+                                <button id="number-list" class="editor-button" title="Lista numerada">
+                                    <i class="fas fa-list-ol"></i>
+                                </button>
+                            </div>
+                            
+                            <!-- Área de edición -->
+                            <div id="editor-content" class="editor-content p-4 rounded-b-md bg-white">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Contenido de pestaña "Capítulos" -->
+                    <div id="content-capitulos" class="mb-6 hidden">
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
+                            <i class="fas fa-book text-gray-300 text-4xl mb-4"></i>
+                            <p class="text-gray-500">Contenido de Capítulos</p>
+                            <p class="text-gray-400 text-sm mt-2">Aquí se mostrará el contenido relacionado con capítulos</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Contenido de pestaña "Rango de publicidad" -->
+                    <div id="content-rango" class="mb-6 hidden">
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
+                            <i class="fas fa-chart-bar text-gray-300 text-4xl mb-4"></i>
+                            <p class="text-gray-500">Contenido de Rango de publicidad</p>
+                            <p class="text-gray-400 text-sm mt-2">Aquí se mostrará el contenido relacionado con rango de publicidad</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Botones de acción -->
+                <div class="flex justify-end gap-3 mt-6">
+                    <button class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                        Cancelar
+                    </button>
+                    <button class="px-4 py-2 text-sm font-medium text-purple-700 bg-purple-100 rounded-md hover:bg-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-300">
+                        Aplicar
+                    </button>
+                    <button class="px-4 py-2 text-sm font-medium text-white bg-purple-700 rounded-md hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-300">
+                        Aceptar
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+
+    </div>
+
+    <script>
+        // Funcionalidad para el editor
+        document.addEventListener('DOMContentLoaded', function() {
+            // Variables globales
+            let fontSize = 12;
+            const editor = document.getElementById('editor-content');
+            
+            // Funcionalidad de pestañas
+            const tabs = {
+                'tab-datos': 'content-datos',
+                'tab-capitulos': 'content-capitulos',
+                'tab-rango': 'content-rango'
+            };
+            
+            document.querySelectorAll('[id^="tab-"]').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Ocultar todos los contenidos
+                    Object.values(tabs).forEach(contentId => {
+                        document.getElementById(contentId).classList.add('hidden');
+                    });
+                    
+                    // Quitar estado activo de todas las pestañas
+                    document.querySelectorAll('[id^="tab-"]').forEach(t => {
+                        t.classList.remove('tab-active');
+                        t.classList.add('tab-inactive');
+                    });
+                    
+                    // Mostrar contenido de esta pestaña
+                    const contentId = tabs[this.id];
+                    document.getElementById(contentId).classList.remove('hidden');
+                    
+                    // Marcar pestaña como activa
+                    this.classList.add('tab-active');
+                    this.classList.remove('tab-inactive');
+                });
+            });
+            
+            // Funcionalidad de formato de texto
+            document.getElementById('bold').addEventListener('click', function() {
+                document.execCommand('bold', false, null);
+                this.classList.toggle('active');
+            });
+            
+            document.getElementById('italic').addEventListener('click', function() {
+                document.execCommand('italic', false, null);
+                this.classList.toggle('active');
+            });
+            
+            document.getElementById('underline').addEventListener('click', function() {
+                document.execCommand('underline', false, null);
+                this.classList.toggle('active');
+            });
+            
+            // Cambiar tamaño de fuente
+            document.getElementById('font-increase').addEventListener('click', function() {
+                fontSize = Math.min(fontSize + 1, 36);
+                updateFontSize();
+            });
+            
+            document.getElementById('font-decrease').addEventListener('click', function() {
+                fontSize = Math.max(fontSize - 1, 8);
+                updateFontSize();
+            });
+            
+            function updateFontSize() {
+                // Crear un rango de selección
+                const selection = window.getSelection();
+                if (!selection.rangeCount) return;
+                
+                const range = selection.getRangeAt(0);
+                const span = document.createElement('span');
+                span.style.fontSize = fontSize + 'pt';
+                
+                // Aplicar el tamaño de fuente
+                document.execCommand('insertHTML', false, '<span style="font-size:' + fontSize + 'pt">' + range.toString() + '</span>');
+                document.getElementById('font-size-display').textContent = `${fontSize}pt`;
+            }
+            
+            // Cambiar familia de fuente
+            document.getElementById('font-family').addEventListener('change', function() {
+                document.execCommand('fontName', false, this.value);
+            });
+            
+            // Alineación de texto
+            document.getElementById('align-left').addEventListener('click', function() {
+                document.execCommand('justifyLeft', false, null);
+                resetAlignButtons();
+                this.classList.add('active');
+            });
+            
+            document.getElementById('align-center').addEventListener('click', function() {
+                document.execCommand('justifyCenter', false, null);
+                resetAlignButtons();
+                this.classList.add('active');
+            });
+            
+            document.getElementById('align-right').addEventListener('click', function() {
+                document.execCommand('justifyRight', false, null);
+                resetAlignButtons();
+                this.classList.add('active');
+            });
+            
+            function resetAlignButtons() {
+                ['align-left', 'align-center', 'align-right'].forEach(id => {
+                    document.getElementById(id).classList.remove('active');
+                });
+            }
+            
+            // Listas
+            document.getElementById('bullet-list').addEventListener('click', function() {
+                document.execCommand('insertUnorderedList', false, null);
+                this.classList.toggle('active');
+            });
+            
+            document.getElementById('number-list').addEventListener('click', function() {
+                document.execCommand('insertOrderedList', false, null);
+                this.classList.toggle('active');
+            });
+            
+            // Cambiar color de texto
+            document.querySelectorAll('.color-picker[data-color]').forEach(picker => {
+                picker.addEventListener('click', function() {
+                    const color = this.getAttribute('data-color');
+                    document.execCommand('foreColor', false, color);
+                });
+            });
+            
+            // Cambiar color de fondo
+            document.querySelectorAll('.color-picker[data-bgcolor]').forEach(picker => {
+                picker.addEventListener('click', function() {
+                    const color = this.getAttribute('data-bgcolor');
+                    document.execCommand('hiliteColor', false, color);
+                });
+            });
+            
+            // Manejar el enfoque del editor
+            editor.addEventListener('click', function() {
+                this.focus();
+            });
+            
+            // Inicializar editor
+            editor.contentEditable = true;
+            
+            // Actualizar estado de botones cuando se selecciona texto
+            document.addEventListener('selectionchange', function() {
+                const format = document.queryCommandState('bold');
+                document.getElementById('bold').classList.toggle('active', format);
+                
+                const italic = document.queryCommandState('italic');
+                document.getElementById('italic').classList.toggle('active', italic);
+                
+                const underline = document.queryCommandState('underline');
+                document.getElementById('underline').classList.toggle('active', underline);
+            });
+        });
+    </script>
+</body>
+</html>
