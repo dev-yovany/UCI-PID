@@ -1,0 +1,51 @@
+ font-family: 'Helvetica', Arial, sans-serif;
+            background-color: #f9fafb;
+        }
+        .editor-toolbar button:hover {
+            background-color: #ede9fe;
+        }
+        .editor-content {
+            min-height: 150px;
+            border: 1px solid #d1d5db;
+            border-top: none;
+        }
+        .editor-content:focus {
+            outline: none;
+        }
+        .tab-active {
+            border-bottom: 3px solid #ede9fe;
+            background-color: #6D28D9;
+            color: white;
+        }
+        .tab-inactive {
+            background-color: #4C1D95;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        .tab-inactive:hover {
+            background-color: #5B21B6;
+            color: white;
+        }
+        .editor-button {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+        }
+        .editor-button.active {
+            background-color: #ddd6fe;
+        }
+        .editor-button:hover {
+            background-color: #ede9fe;
+        }
+        .color-picker {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 1px solid #e5e7eb;
+        }
+        .tab-content-container {
+            min-height: 420px;
+        }
